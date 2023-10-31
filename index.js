@@ -75,6 +75,7 @@ async function run() {
         })
         .send({success:true})
     })
+    app.post('/logout')
 
 
     // services 
@@ -105,7 +106,7 @@ async function run() {
         res.send(result)
     })
 
-    app.get('/bookings',logger,verifyToken, async(req,res)=>{
+    app.get('/bookings',logger, async(req,res)=>{
         console.log(req.query.email)
         // console.log('token', req.cookies.token)
         if(req.query.email !== req.user.email){
