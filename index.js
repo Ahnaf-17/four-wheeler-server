@@ -37,8 +37,9 @@ const logger =async(req,res,next)=>{
 }
 
 const verifyToken = async(req,res,next)=>{
-    const token = req.cookies?.token;
+    const token = req?.cookies?.token;
     console.log('token in middleware: ',token)
+    // if no token 
     if(!token){
         return res.status(401).send({message: 'access denied'})
     }
@@ -75,7 +76,10 @@ async function run() {
         })
         .send({success:true})
     })
-    app.post('/logout')
+    app.post('/logout', async(req,res)=>{
+        const user = req.body;
+        res.clearCookie('token' ,{maxAge: 0}).send({success: true})
+    })
 
 
     // services 
@@ -106,12 +110,12 @@ async function run() {
         res.send(result)
     })
 
-    app.get('/bookings',logger, async(req,res)=>{
+    app.get('/bookings',logger,verifyToken, async(req,res)=>{
         console.log(req.query.email)
-        // console.log('token', req.cookies.token)
-        if(req.query.email !== req.user.email){
-            return res.status(403).send({message: 'forbidden access'})
-        }
+        // console.log('cookies', req.cookies)
+        // if(req.query.email !== req.user.email){
+        //     return res.status(403).send({message: 'forbidden access'})
+        // }
 
 
         let query = {}
