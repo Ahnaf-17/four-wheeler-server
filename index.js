@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 // middleware
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5174'],
     credentials: true
 }));
 app.use(express.json())
@@ -49,7 +49,7 @@ const verifyToken = async(req,res,next)=>{
             return res.status(401).send({message: 'unauthorized'})
         }
         console.log('value of token : ', decoded)
-        req.user = decoded
+        req.user = decoded;
         next()
     })
     
@@ -112,10 +112,10 @@ async function run() {
 
     app.get('/bookings',logger,verifyToken, async(req,res)=>{
         console.log(req.query.email)
-        // console.log('cookies', req.cookies)
-        // if(req.query.email !== req.user.email){
-        //     return res.status(403).send({message: 'forbidden access'})
-        // }
+        console.log('token owner', req.user)
+        if(req.user.email !== req.query.email){
+            return res.status(403).send({message: 'forbidden access'})
+        }
 
 
         let query = {}
